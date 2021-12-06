@@ -1,0 +1,11 @@
+---
+#TODO Convert puppet-workstation manifest vscode.pp
+
+- name: Sync user settings
+  template:
+    src: settings.json.j2
+    dest: "{{ end_user_home }}/.config/Code/User/settings.json"
+    owner: "{{ end_user }}"
+    group: "{{ end_group }}"
+    mode: 0644
+    backup: yes
