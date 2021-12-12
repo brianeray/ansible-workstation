@@ -1,0 +1,8 @@
+---
+- name: Add bash aliases
+  copy:
+    src: .bash_aliases
+    dest: "{{ end_user_home }}/"
+    owner: "{{ end_user }}"
+    group: "{{ end_group }}"
+    mode: 0644

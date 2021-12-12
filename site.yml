@@ -1,6 +1,5 @@
 ---
-#TODO Convert puppet-workstation manifest bash_aliases.pp
-
 - hosts: localhost
   roles:
     - vscode
+    - bash
