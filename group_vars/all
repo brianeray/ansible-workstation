@@ -1,6 +1,8 @@
 ---
-#Update these values or override via --extra-vars prior to running.
+#Update any <placeholder_values> or override via --extra-vars prior to running.
 
 end_user_home: /home/<target_user_id>
 end_user: <target_user_id>
 end_group: <target_group>_id
+
+msoft_package_repo_base_url: https://packages.microsoft.com

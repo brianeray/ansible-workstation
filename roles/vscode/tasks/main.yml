@@ -1,5 +1,19 @@
 ---
-#TODO Convert puppet-workstation manifest vscode.pp
+- name: Add apt key
+  apt_key:
+    url: "{{ msoft_package_repo_base_url }}/keys/microsoft.asc"
+    state: present
+
+- name: Add apt repository
+  apt_repository:
+    repo: "deb {{ msoft_package_repo_base_url }}/repos/code stable main"
+    filename: vscode.list
+    state: present
+
+- name: Install it
+  apt:
+    name: code
+    state: present
 
 - name: Sync user settings
   template:
@@ -8,3 +22,5 @@
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
     mode: 0644
+
+#TODO sync plugins + settings if possible
