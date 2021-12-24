@@ -1,5 +1,5 @@
 ---
 - hosts: localhost
   roles:
-    - vscode
     - bash
+    - vscode
