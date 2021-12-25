@@ -7,7 +7,7 @@
 - name: Add apt repository
   apt_repository:
     repo: "deb {{ msoft_package_repo_base_url }}/repos/code stable main"
-    filename: vscode.list
+    filename: vscode
     state: present
 
 - name: Install it

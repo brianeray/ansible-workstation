@@ -6,3 +6,5 @@ end_user: <target_user_id>
 end_group: <target_group>_id
 
 msoft_package_repo_base_url: https://packages.microsoft.com
+google_cloud_package_repo_base_url: https://packages.cloud.google.com
+kubernetes_package_repo_base_url: https://apt.kubernetes.io
