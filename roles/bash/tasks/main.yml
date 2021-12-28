@@ -6,3 +6,17 @@
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
     mode: 0644
+
+- name: Bump command history
+  lineinfile:
+    path: "{{ end_user_home }}/.bashrc"
+    line: HISTSIZE=2500
+    regexp: '^#?\s*HISTSIZE=\d*$'
+    state: present
+
+- name: Force color prompt
+  lineinfile:
+    path: "{{ end_user_home }}/.bashrc"
+    line: force_color_prompt=yes
+    regexp: '^#?\s*force_color_prompt=.*$'
+    state: present
