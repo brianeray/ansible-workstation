@@ -15,6 +15,14 @@
     name: code
     state: present
 
+- name: Install extensions
+  command:
+    cmd: code --install-extension {{ item }}
+    creates: "{{ end_user_home }}/.vscode/extensions/{{ item }}*"
+  loop: "{{ extensions }}"
+  become: yes
+  become_user: "{{ end_user }}"
+
 - name: Sync user settings
   template:
     src: settings.json.j2
@@ -22,5 +30,3 @@
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
     mode: 0644
-
-#TODO sync plugins + settings if possible

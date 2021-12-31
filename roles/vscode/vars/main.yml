@@ -1,0 +1,9 @@
+---
+extensions:
+  - hbenl.vscode-test-explorer
+  - ms-python.python
+  - ms-python.vscode-pylance
+  - ms-vscode.test-adapter-converter
+  - redhat.ansible
+  - redhat.vscode-yaml
+  - webfreak.code-d
