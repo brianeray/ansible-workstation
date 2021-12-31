@@ -21,6 +21,7 @@
 - name: Set KUBECONFIG variable in bash startup
   blockinfile:
     path: "{{ end_user_home }}/.bashrc"
+    #TODO custom kubeconfigs in a list variable, then joined into path
     block: export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config:$HOME/.kube/configs/learn-to-k8s-kubeconfig.yaml
     marker: "# {mark} ANSIBLE MANAGED BLOCK - KUBECONFIG"
     state: present
