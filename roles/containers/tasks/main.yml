@@ -1,0 +1,13 @@
+---
+#These are available in Debian Bullseye and up, Ubuntu 20.10 and up.
+- name: Install Podman
+  apt:
+    name: podman
+    state: present
+  tags: under_dev
+
+- name: Install Buildah
+  apt:
+    name: buildah
+    state: present
+  tags: under_dev

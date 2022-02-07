@@ -3,5 +3,6 @@
   roles:
     - bash
     - vscode
+    - containers
     - kubernetes
 
