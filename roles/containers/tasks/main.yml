@@ -1,11 +1,22 @@
 ---
 #These are available in Debian Bullseye and up, Ubuntu 20.10 and up.
-- name: Install Podman
-  apt:
-    name: podman
-    state: present
+#For now since we have Bullseye and Ubuntu 20.4, only worry about the former.
+#
+#TODO de-block and make unconditional when we bump Ubuntu box to 20.10
+- name: Install container dev tools
+  block:
+  - name: Install Podman
+    apt:
+      name: podman
+      state: present
 
-- name: Install Buildah
-  apt:
-    name: buildah
-    state: present
+  - name: Install Buildah
+    apt:
+      name: buildah
+      state: present
+
+  - name: Install Skopeo
+    apt:
+      name: skopeo
+      state: present
+  when: ansible_facts.distribution == "Debian"
