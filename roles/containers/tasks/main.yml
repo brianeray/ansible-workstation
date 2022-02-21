@@ -1,5 +1,5 @@
 ---
-#These are available in Debian Bullseye and up, Ubuntu 20.10 and up.
+#These are available in Debian Bullseye and up, Ubuntu 21.04 and up.
 #For now since we have Bullseye and Ubuntu 20.4, only worry about the former.
 #
 #TODO de-block and make unconditional when we bump Ubuntu box to 20.10
