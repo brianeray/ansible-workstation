@@ -1,0 +1,17 @@
+---
+d_repo_base_url: https://github.com/ldc-developers/ldc/releases/download
+d_version: 1.29.0
+d_archive_checksum: sha256:37e3cf6363254d6cd6fff16e0b1464b0746b1eae837df3c197299f7d5c2cc806
+d_binaries:
+  - ddemangle
+  - dub
+  - dustmite
+  - ldc2
+  - ldc-build-runtime
+  - ldc-profdata
+  - ldc-prune-cache
+  - ldmd2
+  - rdmd
+  - reggae
+d_user_home_subdir: ldc2-{{ d_version }}
+d_user_home_dir: "{{ end_user_home }}/.local/bin/{{ d_user_home_subdir }}"

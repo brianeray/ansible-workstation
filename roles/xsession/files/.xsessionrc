@@ -1,0 +1,14 @@
+# ANSIBLE MANAGED FILE
+
+# This is for non-login shells started by non-Gnome desktop managers like
+# lightdm. This is mirroring a chunk of $HOME/.profile (for login shells).
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi

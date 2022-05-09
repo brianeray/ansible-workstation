@@ -20,3 +20,28 @@
     line: force_color_prompt=yes
     regexp: '^#?\s*force_color_prompt=.*$'
     state: present
+
+#Ubuntu/Pop_OS! bash profile puts user local binaries on the PATH out of the
+#box. Check first via `find` as `blockinfile` doesn't allow for a regexp check.
+- name: Check for user local binaries on Bash PATH
+  find:
+    paths: "{{ end_user_home }}"
+    patterns: '.profile'
+    contains: ' *PATH="\$HOME/\.local/bin:\$PATH"'
+    hidden: yes
+    get_checksum: no
+  register: local_bin_on_path
+  tags:
+    - idempotency_check
+
+- name: Inject user local binaries into Bash PATH
+  blockinfile:
+    path: "{{ end_user_home }}/.profile"
+    block: |
+      # set PATH so it includes user's private bin if it exists
+      if [ -d "$HOME/.local/bin" ] ; then
+          PATH="$HOME/.local/bin:$PATH"
+      fi
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - USER LOCAL BINARIES"
+    state: present
+  when: local_bin_on_path.matched == 0

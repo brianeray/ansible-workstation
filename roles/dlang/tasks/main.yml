@@ -1,0 +1,106 @@
+---
+#Grab (presumably) latest stable release from outside of deb repos, even though
+#they typically have ldc2, dub, etc.
+
+#Crude idempotency check to avoid expensive download.
+- name: Check for existing user binaries
+  find:
+    paths: "{{ d_user_home_dir }}/bin"
+    patterns: "{{ d_binaries }}"
+  register: existing_user_binaries
+  tags:
+    - idempotency_check
+
+- name: Install binaries to user home
+  vars:
+    d_binaries_count: "{{ d_binaries | length }}"
+  block:
+    - name: Create temp download dir
+      tempfile:
+        state: directory
+      register: download_dir
+
+    - name: Download archive
+      get_url:
+        url: "{{ d_repo_base_url }}/v{{ d_version }}/ldc2-{{ d_version }}-linux-x86_64.tar.xz"
+        dest: "{{ download_dir.path }}"
+        checksum: "{{ d_archive_checksum }}"
+        timeout: 600                            #can be a slow download
+      register: downloaded_archive
+
+    - name: Remove existing lint if present
+      file:
+        path: "{{ d_user_home_dir }}"
+        state: absent
+
+    - name: (Re)create subdirectory
+      file:
+        path: "{{ d_user_home_dir }}"
+        state: directory
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        mode: 0755
+
+    - name: Inflate archive to user home
+      unarchive:
+        src: "{{ downloaded_archive.dest }}"
+        dest: "{{ d_user_home_dir }}"
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        extra_opts:
+          - --strip-components=1                #zap root subdir; redundant
+        remote_src: yes                         #in case we ever run !localhost
+  when: existing_user_binaries.matched != (d_binaries_count | int)
+
+- name: Detect existing binary symlinks in user home
+  stat:
+    path: "{{ end_user_home }}/.local/bin/{{ item }}"
+    get_attributes: no
+    get_checksum: no
+  loop: "{{ d_binaries }}"
+  register: existing_user_symlinks
+  tags:
+    - idempotency_check
+
+- name: Create user home symlinks as needed
+  file:
+    path: "{{ end_user_home }}/.local/bin/{{ item.item }}"
+    src: "./{{ d_user_home_subdir }}/bin/{{ item.item }}"
+    state: link
+    force: yes                                    #delink if necessary
+  become_user: "{{ end_user }}"                   #owner/group chown the link src :-|
+  loop: "{{ existing_user_symlinks.results }}"
+  when: item.stat.exists == false or
+        item.stat.islnk == false  or
+        item.stat.lnk_target != "./{{ d_user_home_subdir }}/bin/{{ item.item }}"
+        #TODO change last expression above to below on Ansible 2.10+ to avoid
+        #     warning about jinja2 template params in when: conditions
+        #item.stat.lnk_target != (('.', d_user_home_subdir, 'bin', item.item ) | path_join)
+
+- name: Check for user installations for other versions
+  find:
+    paths: "{{ end_user_home }}/.local/bin"
+    patterns: 'ldc2-*'
+    excludes: "{{ d_user_home_subdir }}"
+    file_type: directory
+  register: other_user_binaries
+
+- name: Warn of user installations for other versions
+  debug:
+    msg: >
+      WARNING: Other user installations detected. You may wish to remove them
+      manually: {{ other_user_binaries | json_query('files[*].path') }}
+  when: other_user_binaries.matched > 0
+
+- name: Check for distro installations
+  find:
+    paths: /usr/bin
+    patterns: ldc2
+  register: other_distro_binaries
+
+- name: Warn of distro installations
+  debug:
+    msg: >
+      WARNING: Other distro installation detected. You may wish to remove it
+      via package manager: {{ other_distro_binaries.files[0].path }}
+  when: other_distro_binaries.matched > 0
