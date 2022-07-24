@@ -1,7 +1,7 @@
 ---
 d_repo_base_url: https://github.com/ldc-developers/ldc/releases/download
-d_version: 1.29.0
-d_archive_checksum: sha256:37e3cf6363254d6cd6fff16e0b1464b0746b1eae837df3c197299f7d5c2cc806
+d_version: 1.30.0
+d_archive_checksum: sha256:5784d4cc47d0845af0897d3b7473a08dd0281a4cdabac0a486740840d014fde1
 d_binaries:
   - ddemangle
   - dub
