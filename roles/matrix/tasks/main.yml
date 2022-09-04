@@ -4,7 +4,6 @@
   apt:
     name: matrix-mirage
     state: present
-  tags: under_dev
 
 #TODO If we really like Mirage, zap this
 - name: Warn this Matrix client is perhaps temporary
@@ -14,6 +13,3 @@
       should be available soon in Debian and Ubuntu repos. Should that
       client suffice, or if Mirage otherwise does not work out, this
       playbook will need updating.
-  tags: under_dev
-
-#FIXME kill under_dev tags
