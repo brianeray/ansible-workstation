@@ -20,7 +20,7 @@
     cmd: code --install-extension {{ item }}
     creates: "{{ end_user_home }}/.vscode/extensions/{{ item }}*"
   loop: "{{ extensions }}"
-  become: yes
+  become: true
   become_user: "{{ end_user }}"
 
 - name: Sync user settings
