@@ -1,0 +1,11 @@
+---
+# Naturally we can't bootstrap and install Ansible itself, but we want
+# some other goodies and can configure it.
+
+# TODO Iron out ansible-lint CLI options passed by vscode Ansible extension.
+#      Out of the box it is passing --offline and `-f codeclimate`, both too
+#      new for some distro ansible-lint packages.
+- name: Install linter
+  apt:
+    name: ansible-lint
+    state: present
