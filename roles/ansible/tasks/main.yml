@@ -6,6 +6,6 @@
 #      Out of the box it is passing --offline and `-f codeclimate`, both too
 #      new for some distro ansible-lint packages.
 - name: Install linter
-  apt:
+  ansible.builtin.apt:
     name: ansible-lint
     state: present
