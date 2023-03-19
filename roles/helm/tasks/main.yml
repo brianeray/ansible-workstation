@@ -1,0 +1,24 @@
+---
+- name: Add apt key
+  ansible.builtin.apt_key:
+    url: "{{ helm_package_repo_base_url }}/signing.asc"
+    #Recommended per Helm over default /etc/apt/trusted.gpg.d/*.gpg
+    keyring: /usr/share/keyrings/helm.gpg
+    state: present
+
+- name: Add apt repository
+  ansible.builtin.apt_repository:
+    #See note above about nonstandard keyfile location
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/helm.gpg] {{ helm_package_repo_base_url }}/stable/debian/ all main"
+    filename: helm
+    state: present
+
+- name: Install it
+  ansible.builtin.apt:
+    name: helm
+    state: present
+
+#TODO **securely** config ~/.config/helm file(s)
+- name: Add provider configurations
+  debug:
+    msg: TODO config ~/.config/helm file(s), possibly in cloud-spec role(s)

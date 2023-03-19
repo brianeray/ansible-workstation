@@ -9,3 +9,4 @@ msoft_package_repo_base_url: https://packages.microsoft.com
 google_cloud_package_repo_base_url: https://packages.cloud.google.com
 kubernetes_package_repo_base_url: https://apt.kubernetes.io
 hashicorp_package_repo_base_url: https://apt.releases.hashicorp.com
+helm_package_repo_base_url: https://baltocdn.com/helm

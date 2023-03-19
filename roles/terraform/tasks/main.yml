@@ -19,6 +19,6 @@
     state: present
 
 #TODO **securely** add ~/terraform/*.tf provider files
-- name: Add provider configurations
+- name: Add configuration
   debug:
     msg: TODO add ~/terraform/*.tf provider files, probably in cloud-spec role(s)
