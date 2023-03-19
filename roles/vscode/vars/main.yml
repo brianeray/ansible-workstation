@@ -1,5 +1,6 @@
 ---
 extensions:
+  - hashicorp.terraform
   - hbenl.vscode-test-explorer
   - ms-python.python
   - ms-python.vscode-pylance
