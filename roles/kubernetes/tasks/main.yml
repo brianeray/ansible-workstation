@@ -29,4 +29,4 @@
 #TODO **securely** add ~/.kube/configs/*.yaml configs
 - name: Add cluster configurations
   debug:
-    msg: TODO add ~/.kube/configs/*.yaml configs
+    msg: TODO add ~/.kube/configs/*.yaml configs, probably in cloud-spec role(s)
