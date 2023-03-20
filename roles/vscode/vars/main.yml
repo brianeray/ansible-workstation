@@ -2,6 +2,7 @@
 extensions:
   - hashicorp.terraform
   - hbenl.vscode-test-explorer
+  - ms-kubernetes-tools.vscode-kubernetes-tools
   - ms-python.python
   - ms-python.vscode-pylance
   - ms-vscode.test-adapter-converter
