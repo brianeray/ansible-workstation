@@ -1,32 +1,52 @@
 ---
 - name: Add apt key
-  apt_key:
+  ansible.builtin.apt_key:
     url: "{{ google_cloud_package_repo_base_url }}/apt/doc/apt-key.gpg"
     #Recommended per k8s over default /etc/apt/trusted.gpg.d/*.gpg
     keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
     state: present
 
 - name: Add apt repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     #See note above about nonstandard keyfile location
     repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] {{ kubernetes_package_repo_base_url }}/ kubernetes-xenial main"
     filename: kubernetes
     state: present
 
 - name: Install it
-  apt:
+  ansible.builtin.apt:
     name: kubectl
     state: present
 
-#TODO **securely** add ~/.kube/configs/*.yaml configs from a list (?)
-- name: Add cluster kubeconfigs
-  debug:
-    msg: TODO add ~/.kube/configs/*.yaml configs, probably in cloud-spec role(s)
+- name: Create a kubeconfigs dir if necessary
+  ansible.builtin.file:
+    path: "{{ end_user_home }}/.kube/configs"
+    state: directory
+    owner: "{{ end_user }}"
+    group: "{{ end_group }}"
+    mode: 0775
+  register: kubeconfigs_dir
 
-- name: Set KUBECONFIG variable in bash startup
-  blockinfile:
+- name: Find user kubeconfigs
+  ansible.builtin.find:
+    paths: "{{ kubeconfigs_dir.path }}"
+    patterns:
+      - '*.yml'
+      - '*.yaml'
+  register: kubeconfigs
+
+- name: Clear KUBECONFIG variable in bash startup
+  ansible.builtin.blockinfile:
     path: "{{ end_user_home }}/.bashrc"
-    #TODO join paths from above after $KUBECONFIG; each path preceded by colon
     block: export KUBECONFIG=$KUBECONFIG
     marker: "# {mark} ANSIBLE MANAGED BLOCK - KUBECONFIG"
     state: present
+  when: kubeconfigs.matched == 0
+
+- name: Set KUBECONFIG variable in bash startup
+  ansible.builtin.blockinfile:
+    path: "{{ end_user_home }}/.bashrc"
+    block: export KUBECONFIG=$KUBECONFIG:{{ kubeconfigs.files | map(attribute='path') | join(':') }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - KUBECONFIG"
+    state: present
+  when: kubeconfigs.matched > 0
