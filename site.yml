@@ -2,12 +2,13 @@
 - hosts: localhost
   roles:
     - bash
+    - xsession
+    - backup
     - ansible
     - vscode
     - containers
     - kubernetes
     - dlang
-    - xsession
     - matrix
     - terraform
     - helm
