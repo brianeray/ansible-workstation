@@ -34,6 +34,8 @@
       - '*.yml'
       - '*.yaml'
   register: kubeconfigs
+  tags:
+    - idempotency_check
 
 - name: Clear KUBECONFIG variable in bash startup
   ansible.builtin.blockinfile:
