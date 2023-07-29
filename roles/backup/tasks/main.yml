@@ -10,3 +10,23 @@
   ansible.builtin.apt:
     name: rsync
     state: present
+
+- name: Look for existing gocryptfs config
+  ansible.builtin.find:
+    paths: "{{ backup_dirs }}"
+    patterns: .gocryptfs.reverse.conf
+    hidden: yes
+  register: backup_dirs_crypt_configs
+  tags:
+    - idempotency_check
+
+# TODO Don't just warn of this, use gocryptfs with a _single_ password to init
+- debug:
+    msg: |
+      At least one of {{ backup_dirs }} is not configured for gocryptfs reverse
+      mounts. Create temporary directories for each, then
+      `gocryptfs --init --aessiv` each of them using the same password, then
+      copy the resulting `gocryptfs.conf` at the root of each over to the
+      corresponding backup directory _renaming the files
+      `.gocryptfs.reverse.conf`.
+  when: backup_dirs_crypt_configs.matched < (backup_dirs | length)

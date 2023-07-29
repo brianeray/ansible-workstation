@@ -1,0 +1,6 @@
+---
+backup_dirs:
+  - /etc
+  - /home
+  - /var
+  - /root
