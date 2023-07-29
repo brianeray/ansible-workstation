@@ -5,10 +5,8 @@
   ansible.builtin.apt:
     name: gocryptfs
     state: present
-  tags: wip
 
 - name: Install rsync
   ansible.builtin.apt:
     name: rsync
     state: present
-  tags: wip
