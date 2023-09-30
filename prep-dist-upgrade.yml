@@ -1,0 +1,10 @@
+---
+# Get ready for a distribution upgrade, but don't do the actual upgrade (yet).
+- hosts: localhost
+  roles:
+    - vscode-remove
+    - kubernetes-remove
+    - matrix-remove
+    - terraform-remove
+    - helm-remove
+    - dist-upgrade

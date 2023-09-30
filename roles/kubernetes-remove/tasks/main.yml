@@ -1,0 +1,22 @@
+---
+# Remove the package--don't purge--first
+- name: Remove it, preserving config
+  ansible.builtin.apt:
+    name: kubectl
+    state: absent
+    purge: false
+
+# Disable vendor apt repo + remove (do not purge) package
+- block:
+  - name: Disable apt repository
+    ansible.builtin.command:
+      chdir: "{{ repos_dir }}"
+      argv:
+        - mv
+        - --force
+        - "{{ repo }}"
+        - "{{ repo }}.bak"
+      removes: "{{ repos_dir }}/{{ repo }}"
+  vars:
+    repos_dir: /etc/apt/sources.list.d
+    repo: kubernetes.list

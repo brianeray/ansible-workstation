@@ -1,0 +1,4 @@
+---
+# bullseye/11 to ...
+dist_release_target: "bookworm"
+dist_version_target: "12"

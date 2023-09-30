@@ -1,0 +1,129 @@
+---
+# Get ready for a distribution upgrade, but don't do the actual upgrade (yet).
+# Adapted from
+# https://www.debian.org/releases/bookworm/amd64/release-notes/ch-upgrading.en.html
+
+- name: Load upgrade coordinates
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+
+# TODO changed_when on all the .command tasks; first attempts mostly failed
+- name: Purge obsolete packages
+  ansible.builtin.command:
+    argv:
+      - apt
+      - --assume-yes
+      - purge
+      - ~o
+
+- name: Remove unneeded packages
+  ansible.builtin.command:
+    argv:
+      - apt
+      - --assume-yes
+      - autoremove
+
+- name: Remove undownloadable and useless packages
+  ansible.builtin.command:
+    argv:
+      - apt
+      - --assume-yes
+      - autoclean
+
+- block:
+  - name: List non-Debian packages (apt)
+    ansible.builtin.command:
+      argv:
+        - apt
+        - list
+        - ?narrow(?installed, ?not(?origin(Debian)))
+    register: non_deb_pkgs_1
+
+  - name: List non-Debian packages (apt-forktracer)
+    ansible.builtin.command:
+      argv:
+        - apt-forktracer
+    register: non_deb_pkgs_2
+
+  - ansible.builtin.pause:
+      prompt: |
+        
+        *** Manually remove any non-Debian packages remaining:***
+
+        {{ non_deb_pkgs_1.stdout }}
+        {{ non_deb_pkgs_2.stdout }}
+
+- name: Remove old configuration files
+  ansible.builtin.command:
+    argv:
+       - find
+       - /etc
+       - -type
+       - f
+       - -depth
+       - -name
+       - '*.dpkg-*'
+       # keep -delete *after* ...
+       - -delete
+       - -o
+       - -name
+       - '.ucf-*'
+       # ... every ...
+       - -delete
+       - -o
+       - -name
+       - '*.merge-error'
+       # ... subexpression
+       - -delete
+
+- name: Ensure gpgv is installed
+  ansible.builtin.apt:
+    name: gpgv
+    state: present
+
+- block:
+  - name: List any broken package installs
+    ansible.builtin.command:
+      argv:
+        - dpkg
+        - --audit
+    register: broken_pkg_installs
+    changed_when: broken_pkg_installs.rc != 0
+
+  - ansible.builtin.pause:
+      prompt: |
+        
+        *** Manually reconcile any broken package installs:***
+
+        {{ broken_pkg_installs.stdout }}
+    when: broken_pkg_installs.rc != 0
+
+- block:
+  - name: Backup main repository sources.list
+    ansible.builtin.command:
+      chdir: /etc/apt
+      argv:
+        - cp
+        - --archive
+        - --force
+        - sources.list
+        - sources.list.bak
+
+  - name: Update repository sources.list for [{{ dist_release_target }}]
+    ansible.builtin.template:
+      src: debian-sources.list.j2
+      dest: /etc/apt/sources.list
+      mode: 0644
+
+- ansible.builtin.debug:
+    msg: |
+
+      =========================================================================
+      Doublecheck /etc/apt/sources.list to ensure it is pointing to the proper
+      [{{ dist_release_target }}] repositories.
+
+      Execute remaining steps manually per
+      https://www.debian.org/releases/bookworm/amd64/release-notes/ch-upgrading.en.html#upgradingpackages
+      and then run the root site.yml playbook to restore custom packages and
+      configuration.
+      =========================================================================
