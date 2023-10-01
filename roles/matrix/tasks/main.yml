@@ -1,27 +1,18 @@
 ---
 #TODO Remove and/or switch clients, possibly. See the debug message below.
 - name: Add apt key
-  apt_key:
+  ansible.builtin.apt_key:
     url: "{{ element_package_repo_base_url }}/debian/element-io-archive-keyring.gpg"
     keyring: /usr/share/keyrings/element-io-archive-keyring.gpg
     state: present
 
 - name: Add apt repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] {{ element_package_repo_base_url }}/debian/ default main"
     filename: element-io
     state: present
 
 - name: Install it
-  apt:
+  ansible.builtin.apt:
     name: element-desktop
     state: present
-
-#TODO Zap this if we really like this client over possible alternatives.
-- name: Warn this Matrix client is perhaps temporary
-  debug:
-    msg: >
-      NOTE: Thunderbird 102+ has an integrated Matrix client, and
-      should be available soon in Debian and Ubuntu repos. Should that
-      client suffice, or if Element otherwise does not work out, this
-      playbook will need updating.

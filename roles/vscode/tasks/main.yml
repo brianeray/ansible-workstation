@@ -1,22 +1,28 @@
 ---
-- name: Add apt key
-  apt_key:
-    url: "{{ msoft_package_repo_base_url }}/keys/microsoft.asc"
-    state: present
+# TODO add id for change check + sanity check
+- block:
+  - name: Add apt key
+    ansible.builtin.apt_key:
+      url: "{{ msoft_package_repo_base_url }}/keys/microsoft.asc"
+      # Recommended per MSoft over default /etc/apt/trusted.gpg.d/*.gpg
+      keyring: "{{ microsoft_keyring }}"
+      state: present
 
-- name: Add apt repository
-  apt_repository:
-    repo: "deb {{ msoft_package_repo_base_url }}/repos/code stable main"
-    filename: vscode
-    state: present
+  - name: Add apt repository
+    ansible.builtin.apt_repository:
+      repo: deb [arch=amd64,arm64,armhf signed-by={{ microsoft_keyring }}] {{ msoft_package_repo_base_url }}/repos/code stable main
+      filename: vscode
+      state: present
+  vars:
+    microsoft_keyring: /etc/apt/keyrings/packages.microsoft.gpg
 
 - name: Install it
-  apt:
+  ansible.builtin.apt:
     name: code
     state: present
 
 - name: Install extensions
-  command:
+  ansible.builtin.command:
     cmd: code --install-extension {{ item }}
     creates: "{{ end_user_home }}/.vscode/extensions/{{ item }}*"
   loop: "{{ extensions }}"
@@ -24,7 +30,7 @@
   become_user: "{{ end_user }}"
 
 - name: Sync user settings
-  template:
+  ansible.builtin.template:
     src: settings.json.j2
     dest: "{{ end_user_home }}/.config/Code/User/settings.json"
     owner: "{{ end_user }}"
