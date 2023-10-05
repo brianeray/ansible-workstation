@@ -1,5 +1,7 @@
 ---
-# Get ready for a distribution upgrade, but don't do the actual upgrade (yet).
+# Get ready for a distribution upgrade, but don't do the actual upgrade. It
+# is still safer to do the actual upgrade manually from a terminal shell
+# at this point.
 - hosts: localhost
   roles:
     - vscode-remove
