@@ -11,6 +11,12 @@
     name: rsync
     state: present
 
+# My backup scripts are in Groovy
+- name: Install groovy
+  ansible.builtin.apt:
+    name: groovy
+    state: present
+
 - name: Look for existing gocryptfs config
   ansible.builtin.find:
     paths: "{{ backup_dirs }}"
