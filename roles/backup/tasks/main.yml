@@ -26,6 +26,10 @@
   tags:
     - idempotency_check
 
+# TODO generate ssh keys for easier access
+
+# TODO create remote /etc, /home, /var, /root dirs?
+
 # TODO Don't just warn of this, use gocryptfs with a _single_ password to init
 - debug:
     msg: |
