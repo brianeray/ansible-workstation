@@ -1,0 +1,63 @@
+---
+# Adapted from https://download.ebz.epson.net/man/linux/epsonscan2_e.html
+- name: Check for existing core install
+  ansible.builtin.command: dpkg --status epsonscan2
+  ignore_errors: true
+  register: core_installed
+
+- block:
+  # We always want the install archive because we don't trust Epson completely.
+  - name: Create install dir
+    ansible.builtin.file:
+      path: "{{ installer_dir }}"
+      state: directory
+      owner: "{{ end_user }}"
+      group: "{{ end_group }}"
+      mode: 0755
+
+  - name: Download archive
+    ansible.builtin.get_url:
+      url: "{{ epsonscan_url }}"
+      dest: "{{ installer_dir }}"
+      checksum: "{{ epsonscan_archive_checksum }}"
+      owner: "{{ end_user }}"
+      group: "{{ end_group }}"
+      mode: 0664
+
+  - block:
+    - name: Create temp dir
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: ".epsonscan"
+      register: temp_archive_dir
+
+    - name: Inflate the archive
+      ansible.builtin.unarchive:
+        src: "{{ installer_dir }}/{{ epsonscan_archive }}"
+        dest: "{{ temp_archive_dir.path }}"
+        extra_opts:
+          # zap root subdir; redundant
+          - --strip-components=1
+        remote_src: true
+
+    # FIXME install it if we don't have it installed
+    - name: Install the core package
+      ansible.builtin.apt:
+        deb: "{{ temp_archive_dir.path }}/core/{{ epsonscan_core_pkg }}"
+        state: present
+
+    - ansible.builtin.debug:
+        msg: |
+          Only installed core package, not plugin. You can install the plugin
+          if you need network scanning or optional image processing.
+
+    when: core_installed.rc != 0
+
+  vars:
+    installer_dir: "{{ end_user_installers_dir }}/epson-es-50"
+
+# Sometime installed with desktop. Often easier to use than Epson's.
+- name: Install simple-scan
+  ansible.builtin.apt:
+    name: simple-scan
+    state: present

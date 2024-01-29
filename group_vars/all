@@ -5,6 +5,8 @@ end_user_home: /home/<target_user_id>
 end_user: <target_user_id>
 end_group: <target_group>_id
 
+end_user_installers_dir: "{{ end_user_home }}/Installs"
+
 msoft_package_repo_base_url: https://packages.microsoft.com
 kubernetes_package_repo_base_url: https://pkgs.k8s.io
 hashicorp_package_repo_base_url: https://apt.releases.hashicorp.com

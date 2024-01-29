@@ -1,0 +1,5 @@
+---
+epsonscan_archive: epsonscan2-bundle-6.7.63.0.x86_64.deb.tar.gz
+epsonscan_archive_checksum: sha256:6e4caf15625eab2dbdcac7fb160375e8f28fff7457866c824357d7baf93cba42
+epsonscan_url: https://download3.ebz.epson.net/dsc/f/03/00/15/17/68/050e5a55ed90f4efb4ca3bdd34e5797b149443ca/{{ epsonscan_archive }}
+epsonscan_core_pkg: epsonscan2_6.7.63.0-1_amd64.deb
