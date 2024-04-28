@@ -2,9 +2,18 @@
 #Grab (presumably) latest stable release from outside of deb repos, even though
 #they typically have ldc2, dub, etc.
 
+#Newer versions of ldc use a C compiler to launch a linker, so let's stay in
+#the LLVM family but not be picky about the major version yet.
+- name: Install clang
+  ansible.builtin.apt:
+    name: clang
+    state: present
+
+#TODO Add changed_when(s) below
+
 #Crude idempotency check to avoid expensive download.
 - name: Check for existing user binaries
-  find:
+  ansible.builtin.find:
     paths: "{{ d_user_home_dir }}/bin"
     patterns: "{{ d_binaries }}"
   register: existing_user_binaries
@@ -16,12 +25,12 @@
     d_binaries_count: "{{ d_binaries | length }}"
   block:
     - name: Create temp download dir
-      tempfile:
+      ansible.builtin.tempfile:
         state: directory
       register: download_dir
 
     - name: Download archive
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ d_repo_base_url }}/v{{ d_version }}/ldc2-{{ d_version }}-linux-x86_64.tar.xz"
         dest: "{{ download_dir.path }}"
         checksum: "{{ d_archive_checksum }}"
@@ -29,12 +38,12 @@
       register: downloaded_archive
 
     - name: Remove existing lint if present
-      file:
+      ansible.builtin.file:
         path: "{{ d_user_home_dir }}"
         state: absent
 
     - name: (Re)create subdirectory
-      file:
+      ansible.builtin.file:
         path: "{{ d_user_home_dir }}"
         state: directory
         owner: "{{ end_user }}"
@@ -42,7 +51,7 @@
         mode: 0755
 
     - name: Inflate archive to user home
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ downloaded_archive.dest }}"
         dest: "{{ d_user_home_dir }}"
         owner: "{{ end_user }}"
@@ -53,7 +62,7 @@
   when: existing_user_binaries.matched != (d_binaries_count | int)
 
 - name: Detect existing binary symlinks in user home
-  stat:
+  ansible.builtin.stat:
     path: "{{ end_user_home }}/.local/bin/{{ item }}"
     get_attributes: no
     get_checksum: no
@@ -63,7 +72,7 @@
     - idempotency_check
 
 - name: Create user home symlinks as needed
-  file:
+  ansible.builtin.file:
     path: "{{ end_user_home }}/.local/bin/{{ item.item }}"
     src: "./{{ d_user_home_subdir }}/bin/{{ item.item }}"
     state: link
@@ -72,13 +81,10 @@
   loop: "{{ existing_user_symlinks.results }}"
   when: item.stat.exists == false or
         item.stat.islnk == false  or
-        item.stat.lnk_target != "./{{ d_user_home_subdir }}/bin/{{ item.item }}"
-        #TODO change last expression above to below on Ansible 2.10+ to avoid
-        #     warning about jinja2 template params in when: conditions
-        #item.stat.lnk_target != (('.', d_user_home_subdir, 'bin', item.item ) | path_join)
+        item.stat.lnk_target != (('.', d_user_home_subdir, 'bin', item.item ) | path_join)
 
 - name: Check for user installations for other versions
-  find:
+  ansible.builtin.find:
     paths: "{{ end_user_home }}/.local/bin"
     patterns: 'ldc2-*'
     excludes: "{{ d_user_home_subdir }}"
@@ -86,20 +92,20 @@
   register: other_user_binaries
 
 - name: Warn of user installations for other versions
-  debug:
+  ansible.builtin.debug:
     msg: >
       WARNING: Other user installations detected. You may wish to remove them
       manually: {{ other_user_binaries | json_query('files[*].path') }}
   when: other_user_binaries.matched > 0
 
 - name: Check for distro installations
-  find:
+  ansible.builtin.find:
     paths: /usr/bin
     patterns: ldc2
   register: other_distro_binaries
 
 - name: Warn of distro installations
-  debug:
+  ansible.builtin.debug:
     msg: >
       WARNING: Other distro installation detected. You may wish to remove it
       via package manager: {{ other_distro_binaries.files[0].path }}
