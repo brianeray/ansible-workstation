@@ -41,7 +41,7 @@
             - --strip-components=1
           remote_src: true
 
-      # FIXME install it if we don't have it installed
+      # TODO install it if we don't have it installed
       - name: Install the core package
         ansible.builtin.apt:
           deb: "{{ temp_archive_dir.path }}/core/{{ epsonscan_core_pkg }}"
