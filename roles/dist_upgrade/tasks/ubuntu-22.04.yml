@@ -1,0 +1,128 @@
+---
+# Get ready for a distribution upgrade, but don't do the actual upgrade (yet).
+# Adapted from
+# https://www.debian.org/releases/bookworm/amd64/release-notes/ch-upgrading.en.html
+#
+# Despite switchiing to downstreams that guide still has applicability here.
+# Stripping third-party repos and packages removes some risk.
+
+- name: Load upgrade coordinates
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+
+- name: Report upgrade target
+  ansible.builtin.debug:
+    msg: Preparing for upgrade to {{ dist_version_target }} ({{ dist_release_target }})
+
+- name: Purge obsolete packages
+  ansible.builtin.command:
+    argv:
+      - apt
+      - --assume-yes
+      - purge
+      - ~o
+  register: purge_pkgs
+  changed_when: purge_pkgs.rc == 0
+
+- name: Remove unneeded packages
+  ansible.builtin.command:
+    argv:
+      - apt
+      - --assume-yes
+      - autoremove
+  register: remove_pkgs
+  changed_when: remove_pkgs.rc == 0
+
+- name: Remove undownloadable and useless packages
+  ansible.builtin.command:
+    argv:
+      - apt
+      - --assume-yes
+      - autoclean
+  register: clean_pkgs
+  changed_when: clean_pkgs.rc == 0
+
+- block:
+    - name: List non-{{ ansible_distribution }} packages (apt)
+      ansible.builtin.command:
+        argv:
+          - apt
+          - list
+          - ?narrow(?installed, ?not(?origin({{ ansible_distribution }})))
+      register: odd_pkgs_1
+      changed_when: false
+
+    - name: Ensure apt-forktracer is installed
+      ansible.builtin.apt:
+        name: apt-forktracer
+        state: present
+
+    - name: List otherwise inconsistent packages (apt-forktracer)
+      ansible.builtin.command:
+        argv:
+          - apt-forktracer
+      register: odd_pkgs_2
+      changed_when: false
+
+    - name: Manual removal of non-{{ ansible_distribution }} and inconsistent packages
+      ansible.builtin.pause:
+        prompt: |
+
+          *** Manually remove non-{{ ansible_distribution }} and inconsistent packages:***
+
+          {{ odd_pkgs_1.stdout }}
+          {{ odd_pkgs_2.stdout }}
+
+- name: Remove old configuration files
+  ansible.builtin.command:
+    argv:
+      - find
+      - /etc
+      - -type
+      - f
+      - -depth
+      - -name
+      - '*.dpkg-*'
+      # keep -delete *after* ...
+      - -delete
+      - -o
+      - -name
+      - '.ucf-*'
+      # ... every ...
+      - -delete
+      - -o
+      - -name
+      - '*.merge-error'
+      # ... subexpression
+      - -delete
+  register: del_cfgs
+  changed_when: del_cfgs.rc == 0
+
+- name: Ensure gpgv is installed
+  ansible.builtin.apt:
+    name: gpgv
+    state: present
+
+- block:
+    - name: List any broken package installs
+      ansible.builtin.command:
+        argv:
+          - dpkg
+          - --audit
+      register: broken_pkg_installs
+      changed_when: broken_pkg_installs.rc != 0
+
+    - name: Manual removal of broken packages
+      ansible.builtin.pause:
+        prompt: |
+
+          *** Manually reconcile any broken package installs:***
+
+          {{ broken_pkg_installs.stdout }}
+      when: broken_pkg_installs.rc != 0
+
+- name: Now run the distribution upgrade tool
+  ansible.builtin.debug:
+    msg: |
+
+      *** Run Software Updater or do-release-upgrade per https://help.ubuntu.com/community/Upgrades
