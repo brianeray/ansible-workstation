@@ -10,6 +10,6 @@
     - matrix_remove
     - terraform_remove
     - helm_remove
-    # TODO - epson-scanner_remove
+    - epson_scanner_remove
     # should always come last:
     - dist_upgrade
