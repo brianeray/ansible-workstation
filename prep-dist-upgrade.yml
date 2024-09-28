@@ -2,11 +2,14 @@
 # Get ready for a distribution upgrade, but don't do the actual upgrade. It
 # is still safer to do the actual upgrade manually from a terminal shell
 # at this point.
+
 - hosts: localhost
   roles:
-    - vscode-remove
-    - kubernetes-remove
-    - matrix-remove
-    - terraform-remove
-    - helm-remove
-    - dist-upgrade
+    - vscode_remove
+    - kubernetes_remove
+    - matrix_remove
+    - terraform_remove
+    - helm_remove
+    # TODO - epson-scanner_remove
+    # should always come last:
+    - dist_upgrade

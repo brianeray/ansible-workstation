@@ -21,7 +21,7 @@
   ansible.builtin.find:
     paths: "{{ backup_dirs }}"
     patterns: .gocryptfs.reverse.conf
-    hidden: yes
+    hidden: true
   register: backup_dirs_crypt_configs
   tags:
     - idempotency_check
@@ -31,7 +31,8 @@
 # TODO create remote /etc, /home, /var, /root dirs?
 
 # TODO Don't just warn of this, use gocryptfs with a _single_ password to init
-- debug:
+- name: Warn of nonconfigured backed up dirs
+  debug:
     msg: |
       At least one of {{ backup_dirs }} is not configured for gocryptfs reverse
       mounts. Create temporary directories for each, then

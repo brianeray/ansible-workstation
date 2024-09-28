@@ -1,5 +1,5 @@
 ---
-#TODO Remove and/or switch clients, possibly. See the debug message below.
+# TODO Remove and/or switch clients, possibly. See the debug message below.
 - name: Add apt key
   ansible.builtin.apt_key:
     url: "{{ element_package_repo_base_url }}/debian/element-io-archive-keyring.gpg"

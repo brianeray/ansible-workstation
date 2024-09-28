@@ -1,15 +1,15 @@
 ---
-#Lightdm and other non-Gnome desktop managers (non-gdm3) do not source
-#$HOME/.profile, leaving $HOME/**/bin binaries missing from PATH for non-login
-#Bash sessions. Backstop that here.
+# Lightdm and other non-Gnome desktop managers (non-gdm3) do not source
+# $HOME/.profile, leaving $HOME/**/bin binaries missing from PATH for non-login
+# Bash sessions. Backstop that here.
 #
-#This is a really crude check because the existence of global config for
-#lightdm does not guarantee it's installed or that it's the desktop manager
-#in use.
+# This is a really crude check because the existence of global config for
+# lightdm does not guarantee it's installed or that it's the desktop manager
+# in use.
 - name: Check for lightdm destop manager
   find:
     paths: /etc/lightdm
-    get_checksum: no
+    get_checksum: false
   register: lightdm_system_config
 
 - name: Config user Xsession properties
@@ -21,4 +21,4 @@
     mode: 0644
   when: lightdm_system_config.matched > 0
 
-#TODO xset longer screen saver timeouts, at least on workstation
+# TODO xset longer screen saver timeouts, at least on workstation

@@ -12,4 +12,4 @@
     - matrix
     - terraform
     - helm
-    - epson-scanner
+    - epson_scanner
