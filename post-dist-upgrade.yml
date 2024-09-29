@@ -1,0 +1,12 @@
+---
+# Reconfig repos and reinstall packages stripped by pre-dist-upgrade.yml.
+# Pretty much a stripped-down site.yml.
+
+- hosts: localhost
+  roles:
+    - vscode
+    - kubernetes
+    - matrix
+    - terraform
+    - helm
+    - epson_scanner
