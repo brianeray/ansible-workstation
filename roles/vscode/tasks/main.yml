@@ -21,4 +21,4 @@
     dest: "{{ end_user_home }}/.config/Code/User/settings.json"
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
-    mode: 0644
+    mode: "0644"

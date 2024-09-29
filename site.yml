@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Play to install and config my dev workstations
+  hosts: localhost
   roles:
     - bash
     - xsession

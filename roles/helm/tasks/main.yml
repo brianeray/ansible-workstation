@@ -9,5 +9,5 @@
 
 # TODO **securely** config ~/.config/helm file(s)
 - name: Add provider configurations
-  debug:
+  ansible.builtin.debug:
     msg: TODO config ~/.config/helm file(s), possibly in cloud-spec role(s)

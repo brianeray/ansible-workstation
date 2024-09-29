@@ -6,8 +6,11 @@
     state: absent
     purge: false
 
-# Disable vendor apt repo + remove (do not purge) package
-- block:
+- name: Disable vendor repo
+  vars:
+    repos_dir: /etc/apt/sources.list.d
+    repo: hashicorp.list
+  block:
     - name: Disable apt repository
       ansible.builtin.command:
         chdir: "{{ repos_dir }}"
@@ -17,6 +20,3 @@
           - "{{ repo }}"
           - "{{ repo }}.bak"
         removes: "{{ repos_dir }}/{{ repo }}"
-  vars:
-    repos_dir: /etc/apt/sources.list.d
-    repo: hashicorp.list

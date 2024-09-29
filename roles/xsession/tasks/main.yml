@@ -7,18 +7,18 @@
 # lightdm does not guarantee it's installed or that it's the desktop manager
 # in use.
 - name: Check for lightdm destop manager
-  find:
+  ansible.builtin.find:
     paths: /etc/lightdm
     get_checksum: false
   register: lightdm_system_config
 
 - name: Config user Xsession properties
-  copy:
+  when: lightdm_system_config.matched > 0
+  ansible.builtin.copy:
     src: .xsessionrc
     dest: "{{ end_user_home }}/"
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
-    mode: 0644
-  when: lightdm_system_config.matched > 0
+    mode: "0644"
 
 # TODO xset longer screen saver timeouts, at least on workstation

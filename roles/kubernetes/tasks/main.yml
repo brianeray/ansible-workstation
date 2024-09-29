@@ -13,7 +13,7 @@
     state: directory
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
-    mode: 0775
+    mode: "0775"
   register: kubeconfigs_dir
 
 - name: Find user kubeconfigs

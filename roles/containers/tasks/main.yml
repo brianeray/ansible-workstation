@@ -1,15 +1,15 @@
 ---
 - name: Install Podman
-  apt:
+  ansible.builtin.apt:
     name: podman
     state: present
 
 - name: Install Buildah
-  apt:
+  ansible.builtin.apt:
     name: buildah
     state: present
 
 - name: Install Skopeo
-  apt:
+  ansible.builtin.apt:
     name: skopeo
     state: present

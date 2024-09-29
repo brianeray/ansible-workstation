@@ -23,6 +23,7 @@
 - name: Install binaries to user home
   vars:
     d_binaries_count: "{{ d_binaries | length }}"
+  when: existing_user_binaries.matched != (d_binaries_count | int)
   block:
     - name: Create temp download dir
       ansible.builtin.tempfile:
@@ -35,6 +36,7 @@
         dest: "{{ download_dir.path }}"
         checksum: "{{ d_archive_checksum }}"
         timeout: 600                            # can be a slow download
+        mode: "0440"
       register: downloaded_archive
 
     - name: Remove existing lint if present
@@ -48,7 +50,7 @@
         state: directory
         owner: "{{ end_user }}"
         group: "{{ end_group }}"
-        mode: 0755
+        mode: "0755"
 
     - name: Inflate archive to user home
       ansible.builtin.unarchive:
@@ -59,7 +61,6 @@
         extra_opts:
           - --strip-components=1                # zap root subdir; redundant
         remote_src: true                        # in case we ever run !localhost
-  when: existing_user_binaries.matched != (d_binaries_count | int)
 
 - name: Detect existing binary symlinks in user home
   ansible.builtin.stat:

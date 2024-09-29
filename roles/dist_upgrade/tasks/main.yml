@@ -2,6 +2,6 @@
 # Get ready for a distribution upgrade, but don't do the actual upgrade (yet).
 # Remember that ansible_distribution_version is the *current* version, so we
 # expact a tasks file named something like debian-11.yml.
-- name: "Run tasks for {{ ansible_distribution }} {{ ansible_distribution_version }}"
+- name: "Run tasks for {{ ansible_distribution ~ ':' ~ ansible_distribution_version }}"
   ansible.builtin.include_tasks:
     file: "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"

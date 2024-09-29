@@ -1,9 +1,12 @@
 ---
-# Get ready for a distribution upgrade, but don't do the actual upgrade. It
-# is still safer to do the actual upgrade manually from a terminal shell
-# at this point.
+# Primarily for stripping packages and related apt cleanup so that the distro
+# upgrade does not get tripped up by apt cruft.
+#
+# TODO After all local boxes are switched to Snaps, zap all save
+# epson_scanner_remove and dist_upgrade.
 
-- hosts: localhost
+- name: Play to prep for a distribution upgrade
+  hosts: localhost
   roles:
     - vscode_remove
     - kubernetes_remove

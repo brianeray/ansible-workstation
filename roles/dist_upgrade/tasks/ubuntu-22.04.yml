@@ -42,8 +42,9 @@
   register: clean_pkgs
   changed_when: clean_pkgs.rc == 0
 
-- block:
-    - name: List non-{{ ansible_distribution }} packages (apt)
+- name: Report non-distro and inconsistent packages
+  block:
+    - name: List non-distro packages (apt)
       ansible.builtin.command:
         argv:
           - apt
@@ -64,7 +65,7 @@
       register: odd_pkgs_2
       changed_when: false
 
-    - name: Manual removal of non-{{ ansible_distribution }} and inconsistent packages
+    - name: Manual removal of non-distro and inconsistent packages
       ansible.builtin.pause:
         prompt: |
 
@@ -103,7 +104,8 @@
     name: gpgv
     state: present
 
-- block:
+- name: Report broken packages
+  block:
     - name: List any broken package installs
       ansible.builtin.command:
         argv:

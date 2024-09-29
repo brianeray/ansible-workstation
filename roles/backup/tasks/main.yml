@@ -32,7 +32,7 @@
 
 # TODO Don't just warn of this, use gocryptfs with a _single_ password to init
 - name: Warn of nonconfigured backed up dirs
-  debug:
+  ansible.builtin.debug:
     msg: |
       At least one of {{ backup_dirs }} is not configured for gocryptfs reverse
       mounts. Create temporary directories for each, then

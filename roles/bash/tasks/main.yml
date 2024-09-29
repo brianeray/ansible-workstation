@@ -1,21 +1,21 @@
 ---
 - name: Add bash aliases
-  copy:
+  ansible.builtin.copy:
     src: .bash_aliases
     dest: "{{ end_user_home }}/"
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
-    mode: 0644
+    mode: "0644"
 
 - name: Bump command history
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ end_user_home }}/.bashrc"
     line: HISTSIZE=2500
     regexp: '^#?\s*HISTSIZE=\d*$'
     state: present
 
 - name: Force color prompt
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ end_user_home }}/.bashrc"
     line: force_color_prompt=yes
     regexp: '^#?\s*force_color_prompt=.*$'
@@ -24,7 +24,7 @@
 # Ubuntu/Pop_OS! bash profile puts user local binaries on the PATH out of the
 # box. Check first via `find` as `blockinfile` doesn't allow for a regexp check.
 - name: Check for user local binaries on Bash PATH
-  find:
+  ansible.builtin.find:
     paths: "{{ end_user_home }}"
     patterns: '.profile'
     contains: ' *PATH="\$HOME/\.local/bin:\$PATH"'
@@ -35,7 +35,7 @@
     - idempotency_check
 
 - name: Inject user local binaries into Bash PATH
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: "{{ end_user_home }}/.profile"
     block: |
       # set PATH so it includes user's private bin if it exists
