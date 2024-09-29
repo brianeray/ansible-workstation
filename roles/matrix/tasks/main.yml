@@ -1,18 +1,6 @@
 ---
-# TODO Remove and/or switch clients, possibly. See the debug message below.
-- name: Add apt key
-  ansible.builtin.apt_key:
-    url: "{{ element_package_repo_base_url }}/debian/element-io-archive-keyring.gpg"
-    keyring: /usr/share/keyrings/element-io-archive-keyring.gpg
-    state: present
-
-- name: Add apt repository
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] {{ element_package_repo_base_url }}/debian/ default main"
-    filename: element-io
-    state: present
-
 - name: Install it
-  ansible.builtin.apt:
+  community.general.snap:
     name: element-desktop
+    channel: stable
     state: present

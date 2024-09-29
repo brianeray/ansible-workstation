@@ -1,21 +1,10 @@
 ---
-- name: Add apt key
-  ansible.builtin.apt_key:
-    url: "{{ hashicorp_package_repo_base_url }}/gpg"
-    # Recommended per HashiCorp over default /etc/apt/trusted.gpg.d/*.gpg
-    keyring: /usr/share/keyrings/hashicorp-archive-keyring.gpg
-    state: present
-
-- name: Add apt repository
-  ansible.builtin.apt_repository:
-    # See note above about nonstandard keyfile location
-    repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] {{ hashicorp_package_repo_base_url }} {{ ansible_facts['lsb']['codename'] }} main"
-    filename: hashicorp
-    state: present
-
 - name: Install it
-  ansible.builtin.apt:
+  community.general.snap:
     name: terraform
+    # classic confinement per Snap listing install recommendation
+    classic: true
+    channel: stable
     state: present
 
 # TODO **securely** add ~/terraform/*.tf provider files

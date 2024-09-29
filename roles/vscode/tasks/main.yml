@@ -1,24 +1,10 @@
 ---
-# TODO add id for change check + sanity check
-- block:
-  - name: Add apt key
-    ansible.builtin.apt_key:
-      url: "{{ msoft_package_repo_base_url }}/keys/microsoft.asc"
-      # Recommended per MSoft over default /etc/apt/trusted.gpg.d/*.gpg
-      keyring: "{{ microsoft_keyring }}"
-      state: present
-
-  - name: Add apt repository
-    ansible.builtin.apt_repository:
-      repo: deb [arch=amd64,arm64,armhf signed-by={{ microsoft_keyring }}] {{ msoft_package_repo_base_url }}/repos/code stable main
-      filename: vscode
-      state: present
-  vars:
-    microsoft_keyring: /etc/apt/keyrings/packages.microsoft.gpg
-
 - name: Install it
-  ansible.builtin.apt:
+  community.general.snap:
     name: code
+    # classic confinement per VScode install recommendation
+    classic: true
+    channel: stable
     state: present
 
 - name: Install extensions

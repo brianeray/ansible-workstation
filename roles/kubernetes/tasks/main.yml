@@ -1,25 +1,10 @@
 ---
-- block:
-  # TODO add id for change check?
-  - name: Add apt key
-    ansible.builtin.apt_key:
-      url: "{{ k8s_repo_path }}/Release.key"
-      # Recommended per k8s over default /etc/apt/trusted.gpg.d/*.gpg
-      keyring: "{{ k8s_keyring }}"
-      state: present
-
-  - name: Add apt repository
-    ansible.builtin.apt_repository:
-      repo: "deb [signed-by={{ k8s_keyring }}] {{ k8s_repo_path }}/ /"
-      filename: kubernetes
-      state: present
-  vars:
-    k8s_keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    k8s_repo_path: "{{ kubernetes_package_repo_base_url }}/core:/stable:/{{ k8s_minor_version}}/deb"
-
 - name: Install it
-  ansible.builtin.apt:
+  community.general.snap:
     name: kubectl
+    # classic confinement per k8s install recommendation
+    classic: true
+    channel: stable
     state: present
 
 - name: Create a kubeconfigs dir if necessary
