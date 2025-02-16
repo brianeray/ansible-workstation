@@ -1,6 +1,18 @@
 ---
 # Backup-related utils
 
+- name: Handy backup media filesystem create config
+  ansible.builtin.blockinfile:
+    path: /etc/mke2fs.conf
+    block: |
+      # like ext4 but no journaling
+      ext4_backup = {
+          features = ^has_journal,extent,huge_file,flex_bg,metadata_csum,64bit,dir_nlink,extra_isize
+      }
+    insertbefore: "ext4 ="
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - MKE2FS"
+    state: present
+
 - name: Install gocryptfs
   ansible.builtin.apt:
     name: gocryptfs
