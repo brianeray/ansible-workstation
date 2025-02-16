@@ -4,6 +4,7 @@
   roles:
     - bash
     - xsession
+    - sysadmin
     - backup
     - ansible
     - vscode

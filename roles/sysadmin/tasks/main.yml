@@ -1,0 +1,8 @@
+---
+# General system administration goodies. Some of these are already present
+# and/or configured on some of my distros, but some aren't.
+
+- name: Install syssstat
+  ansible.builtin.apt:
+    name: sysstat
+    state: present
