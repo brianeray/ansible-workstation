@@ -1,0 +1,42 @@
+---
+# Adapted from https://www.dbvis.com/installation-instructions/
+- name: Check for existing install
+  ansible.builtin.command: dpkg --status dbvis
+  ignore_errors: true
+  register: dbvis_installed
+  changed_when: false
+
+- name: Fetch and install the deb package
+  when: dbvis_installed.rc != 0
+  vars:
+    installer_dir: "{{ end_user_installers_dir }}/dbvis"
+  block:
+    # We always want the deb saved off locally just in case
+    - name: Create install dir
+      ansible.builtin.file:
+        path: "{{ installer_dir }}"
+        state: directory
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        mode: "0755"
+
+    - name: Download package
+      ansible.builtin.get_url:
+        url: "{{ dbvis_url }}"
+        dest: "{{ installer_dir }}"
+        checksum: "{{ dbvis_pkg_checksum }}"
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        mode: "0664"
+
+    - name: Install the package
+      ansible.builtin.command: dpkg --install {{ installer_dir }}/{{ dbvis_pkg }}
+      register: pkg_installed
+      changed_when: pkg_installed.rc == 0
+
+    - name: Give guidance on post-install steps
+      when: pkg_installed.rc == 0
+      ansible.builtin.debug:
+        msg: |
+          You have not done so already with a previous install, you may
+          need to install your license via the `dbvis.license` file.

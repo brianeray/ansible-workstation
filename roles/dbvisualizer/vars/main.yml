@@ -1,0 +1,4 @@
+---
+dbvis_pkg: dbvis_linux_25_1_4.deb
+dbvis_pkg_checksum: sha256:4fdbcf5aca75547da9ffd96c4dcd0290c0cd19b85f74a647fe4f8d241a9761be
+dbvis_url: https://www.dbvis.com/product_download/dbvis-25.1.4/media/{{ dbvis_pkg }}
