@@ -1,5 +1,7 @@
 ---
 # Adapted from https://www.dbvis.com/installation-instructions/
+
+# TODO Parse the version returned by this, enabling update of stale versions.
 - name: Check for existing install
   ansible.builtin.command: dpkg --status dbvis
   ignore_errors: true
