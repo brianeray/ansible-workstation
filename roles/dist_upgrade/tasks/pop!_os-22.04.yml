@@ -58,7 +58,7 @@
         name: apt-forktracer
         state: present
 
-    - name: List otherwise inconsistent packages (apt-forktracer)
+    - name: List other inconsistent packages (apt-forktracer, may report noise)
       ansible.builtin.command:
         argv:
           - apt-forktracer
