@@ -49,7 +49,7 @@
         argv:
           - apt
           - list
-          - ?narrow(?installed, ?not(?origin({{ ansible_distribution }})))
+          - ?narrow(?installed, ?not(?origin(pop-os-release)), ?not(?origin(pop-os-apps)), ?not(?origin(ubuntu)))
       register: odd_pkgs_1
       changed_when: false
 
