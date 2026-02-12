@@ -5,10 +5,11 @@
 #   https://support.epson.net/linux/en/epsonscan2.php
 #
 # Click on the appropriate Architecture Download link to capture the the
-# following values. You'll need to inspect the archive locally to get the
+# following values. You may need to fire up browser tools to find the redirect
+# URL for `_url`. You'll need to inspect the archive locally to get the
 # _archive_checksum and _core_package.
 
-epsonscan_archive: epsonscan2-bundle-6.7.70.0.x86_64.deb.tar.gz
-epsonscan_archive_checksum: sha256:d294c9fc80b7cbffce295666bd912bf8d64d6ddfd034d910ad21e31d4aa19de4
-epsonscan_url: https://download3.ebz.epson.net/dsc/f/03/00/16/14/38/7b1780ace96e2c6033bbb667c7f3ed281e4e9f38/{{ epsonscan_archive }}
-epsonscan_core_pkg: epsonscan2_6.7.70.0-1_amd64.deb
+epsonscan_archive: epsonscan2-bundle-6.7.80.0.x86_64.deb.tar.gz
+epsonscan_archive_checksum: sha256:e403d8338f4705b28244b8eef6833ae8a29a932f234b15b429798c78b5d70f01
+epsonscan_url: https://download3.ebz.epson.net/dsc/f/03/00/17/08/12/9f3fec0ae80aa5c36f5170377ebcc38c93251e23/{{ epsonscan_archive }}
+epsonscan_core_pkg: epsonscan2_6.7.80.0-1_amd64.deb
