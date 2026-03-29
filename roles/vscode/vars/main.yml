@@ -10,3 +10,4 @@ extensions:
   - redhat.vscode-yaml
   - webfreak.code-d
   - ms-vscode-remote.remote-containers
+  - golang.go
