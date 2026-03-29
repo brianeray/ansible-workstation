@@ -13,3 +13,8 @@
   ansible.builtin.apt:
     name: skopeo
     state: present
+
+- name: Install Podman Compose
+  ansible.builtin.apt:
+    name: podman-compose
+    state: present
