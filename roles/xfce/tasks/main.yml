@@ -1,0 +1,8 @@
+---
+- name: Copy user settings
+  ansible.builtin.copy:
+    src: ./xfce-perchannel-xml/
+    dest: "{{ end_user_home }}/.config/xfce4/xfconf/xfce-perchannel-xml/"
+    owner: "{{ end_user }}"
+    group: "{{ end_group }}"
+    mode: "0664"
