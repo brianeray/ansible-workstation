@@ -1,0 +1,19 @@
+---
+- name: Node attribute override - {{ node.description }}
+  community.general.xml:
+    path: "{{ config_file }}"
+    xpath: "{{ node.xpath }}"
+    attribute: "{{ attribute.key }}"
+    value: "{{ attribute.value }}"
+  loop: "{{ node.attribute_overrides | dict2items }}"
+  loop_control:
+    loop_var: attribute
+
+- name: Node attribute prune - {{ node.description }}
+  community.general.xml:
+    path: "{{ config_file }}"
+    xpath: "{{ node.xpath }}/@{{ attribute }}"
+    state: absent
+  loop: "{{ node.attribute_removals }}"
+  loop_control:
+    loop_var: attribute

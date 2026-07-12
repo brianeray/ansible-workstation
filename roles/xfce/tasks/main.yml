@@ -7,32 +7,39 @@
     group: "{{ end_group }}"
     mode: "0664"
 
-- name: Set some desktop settings
+- name: Desktop settings
   vars:
     config_file: "{{ end_user_home }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+    desktop_icons_xpath: /channel/property[@name='desktop-icons']
+    file_icons_xpath: "{{ desktop_icons_xpath }}/property[@name='file-icons']"
     nodes:
-      - xpath: /channel/property[@name='desktop-icons']/property[@name='style']
-        vals:
-          type: empty
-        prune:
-          - value
-
-  block:
-    - name: Icon style - attribute overrides
-      community.general.xml:
-        path: "{{ config_file }}"
-        xpath: "{{ nodes[0].xpath }}"
-        attribute: "{{ node.key }}"
-        value: "{{ node.value }}"
-      loop: "{{ nodes[0].vals | dict2items }}"
-      loop_control:
-        loop_var: node
-
-    - name: Icon style - attribute prune
-      community.general.xml:
-        path: "{{ config_file }}"
-        xpath: "{{ nodes[0].xpath }}/@{{ node }}"
-        state: absent
-      loop: "{{ nodes[0].prune }}"
-      loop_control:
-        loop_var: node
+      # desktop file icon visibility
+      - xpath: "{{ file_icons_xpath }}/property[@name='show-removable']"
+        description: Desktop > Show any removables
+        attribute_overrides:
+          type: bool
+          value: "true"
+        attribute_removals: []
+      - xpath: "{{ file_icons_xpath }}/property[@name='show-unknown-removable']"
+        description: Desktop > Show other removable devices
+        attribute_overrides:
+          type: bool
+          value: "true"
+        attribute_removals: []
+      - xpath: "{{ file_icons_xpath }}/property[@name='show-device-removable']"
+        description: Desktop > Show removable drives
+        attribute_overrides:
+          type: bool
+          value: "true"
+        attribute_removals: []
+      - xpath: "{{ file_icons_xpath }}/property[@name='show-network-removable']"
+        description: Desktop > Show network shares
+        attribute_overrides:
+          type: bool
+          value: "true"
+        attribute_removals: []
+  ansible.builtin.include_tasks:
+    file: config_xml.yml
+  loop: "{{ nodes }}"
+  loop_control:
+    loop_var: node
