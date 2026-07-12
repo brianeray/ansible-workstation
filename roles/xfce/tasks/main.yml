@@ -43,3 +43,26 @@
   loop: "{{ nodes }}"
   loop_control:
     loop_var: node
+
+- name: X settings
+  vars:
+    config_file: "{{ end_user_home }}/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
+    basic_theme_xpath: /channel/property[@name='Net']
+    gtk_theme_xpath: /channel/property[@name='Gtk']
+    nodes:
+      - xpath: "{{ basic_theme_xpath }}/property[@name='ThemeName']"
+        description: Basic theme > Global theme
+        attribute_overrides:
+          value: Greybird-dark
+        attribute_removals: []
+      - xpath: "{{ gtk_theme_xpath }}/property[@name='CursorThemeSize']"
+        description: GTK theme > Cursor size
+        attribute_overrides:
+          type: int
+          value: "48"
+        attribute_removals: []
+  ansible.builtin.include_tasks:
+    file: config_xml.yml
+  loop: "{{ nodes }}"
+  loop_control:
+    loop_var: node
