@@ -5,6 +5,7 @@
     xpath: "{{ node.xpath }}"
     attribute: "{{ attribute.key }}"
     value: "{{ attribute.value }}"
+    pretty_print: true
   loop: "{{ node.attribute_overrides | dict2items }}"
   loop_control:
     loop_var: attribute
