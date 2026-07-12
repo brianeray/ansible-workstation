@@ -4,10 +4,10 @@
   roles:
     - bash
     - xsession
-    - xfce
     - sysadmin
     - backup
     - ansible
+    - xfce
     - vscode
     - containers
     - kubernetes

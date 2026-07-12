@@ -6,3 +6,33 @@
     owner: "{{ end_user }}"
     group: "{{ end_group }}"
     mode: "0664"
+
+- name: Set some desktop settings
+  vars:
+    config_file: "{{ end_user_home }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+    nodes:
+      - xpath: /channel/property[@name='desktop-icons']/property[@name='style']
+        vals:
+          type: empty
+        prune:
+          - value
+
+  block:
+    - name: Icon style - attribute overrides
+      community.general.xml:
+        path: "{{ config_file }}"
+        xpath: "{{ nodes[0].xpath }}"
+        attribute: "{{ node.key }}"
+        value: "{{ node.value }}"
+      loop: "{{ nodes[0].vals | dict2items }}"
+      loop_control:
+        loop_var: node
+
+    - name: Icon style - attribute prune
+      community.general.xml:
+        path: "{{ config_file }}"
+        xpath: "{{ nodes[0].xpath }}/@{{ node }}"
+        state: absent
+      loop: "{{ nodes[0].prune }}"
+      loop_control:
+        loop_var: node
