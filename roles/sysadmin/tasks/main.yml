@@ -5,6 +5,7 @@
 - name: Install apt-packaged diagnostics
   ansible.builtin.apt:
     name:
+      - apt-listchanges
       - nethogs
       - sysstat
     state: present
