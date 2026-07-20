@@ -10,8 +10,8 @@
   vars:
     installer_dir: "{{ end_user_installers_dir }}/epson-es-50"
   block:
-    # We always want the install archive because we don't trust Epson completely.
-    - name: Create install dir
+    # Ensure we have archive regardless of whether it's installed.
+    - name: Create installer dir
       ansible.builtin.file:
         path: "{{ installer_dir }}"
         state: directory
