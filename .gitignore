@@ -1,2 +1,6 @@
 .vscode
 test.yml
+
+# Some Xfce and Xubuntu analysis
+xfce4-diff.txt
+xubuntu-diff.txt
