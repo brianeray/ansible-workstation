@@ -1,0 +1,6 @@
+---
+# You'll need to download mnaully to checksum a newer version.
+
+android_platform_tools_archive: platform-tools_r37.0.1-linux.zip
+android_platform_tools_archive_checksum: sha256:d230f13842f60f782a8645f9c813f8f845bf36089ea7289f28c48f17979313f1
+android_platform_tools_url: https://dl.google.com/android/repository/{{ android_platform_tools_archive }}

@@ -1,0 +1,50 @@
+---
+# Adapted from https://grapheneos.org/install/cli#standalone-platform-tools
+
+- name: Fetch and install platform tools
+  vars:
+    installer_dir: "{{ end_user_installers_dir }}/android-platform-tools"
+    inflate_dir: "{{ end_user_home }}/.local/bin"
+    tools_dir: "{{ inflate_dir }}/platform-tools"
+  block:
+    # Ensure we have archive regardless of whether it's installed.
+    - name: Create installer dir
+      ansible.builtin.file:
+        path: "{{ installer_dir }}"
+        state: directory
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        mode: "0755"
+
+    - name: Download archive
+      ansible.builtin.get_url:
+        url: "{{ android_platform_tools_url }}"
+        dest: "{{ installer_dir }}"
+        checksum: "{{ android_platform_tools_archive_checksum }}"
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        mode: "0664"
+
+    - name: Inflate the archive
+      ansible.builtin.unarchive:
+        src: "{{ installer_dir }}/{{ android_platform_tools_archive }}"
+        dest: "{{ inflate_dir }}"
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        remote_src: true
+        creates: "{{ tools_dir }}"
+
+    # Irritating, but owner + group previous misses subdirs.
+    - name: Ensure ownership of all install directory contents
+      ansible.builtin.file:
+        path: "{{ tools_dir }}/lib64"
+        state: directory
+        owner: "{{ end_user }}"
+        group: "{{ end_group }}"
+        mode: "0755"
+
+    - name: Warn tools are not on PATH
+      ansible.builtin.debug:
+        msg: |
+          `platform-tools` are not on the PATH, to avoid shadowing distro tools
+          such as `mke2fs`. Tools are now in {{ tools_dir }}.
