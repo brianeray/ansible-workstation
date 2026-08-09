@@ -2,19 +2,35 @@
 - name: Play to install and config my dev workstations
   hosts: localhost
   roles:
-    - bash
-    - xsession
-    - sysadmin
-    - backup
-    - ansible
-    - xfce
-    - vscode
-    - containers
-    - kubernetes
-    - dlang
-    - matrix
-    - terraform
-    - helm
-    - epson_scanner
-    - dbvisualizer
-    - android
+    - role: bash
+      tags: bash
+    - role: xsession
+      tags: xsession
+    - role: sysadmin
+      tags: sysadmin
+    - role: backup
+      tags: backup
+    - role: ansible
+      tags: ansible
+    - role: xfce
+      tags: xfce
+    - role: vscode
+      tags: vscode
+    - role: containers
+      tags: containers
+    - role: kubernetes
+      tags: kubernetes
+    - role: dlang
+      tags: dlang
+    - role: matrix
+      tags: matrix
+    - role: terraform
+      tags: terraform
+    - role: helm
+      tags: helm
+    - role: epson_scanner
+      tags: epson_scanner
+    - role: dbvisualizer
+      tags: dbvisualizer
+    - role: android
+      tags: android
