@@ -48,3 +48,8 @@
         msg: |
           `platform-tools` are not on the PATH, to avoid shadowing distro tools
           such as `mke2fs`. Tools are now in {{ tools_dir }}.
+
+- name: Install SDK platform tools to enable rootless installs
+  ansible.builtin.apt:
+    name: android-sdk-platform-tools-common
+    state: present
